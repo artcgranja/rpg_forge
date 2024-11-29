@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block title %} Caracters {% endblock %}
+
+{% block content %}
+    <h1>Caracters</h1>
+    <table>
+        <tr>
+            <th>Nome</th>
+            <th>Classe</th>
+            <th>Descrição</th>
+        </tr>
+        {% for caracter in caracters %}
+        <tr>
+            <td>{{ caracter.nome }}</td>
+            <td>{{ caracter.classe }}</td>
+            <td>{{ caracter.descricao }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

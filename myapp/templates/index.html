@@ -1,0 +1,25 @@
+{% extends 'base.html' %} {% block title %} Home {% endblock %}
+
+{% block content %}
+    <h1>Olá Mundo!</h1>
+    {% for habilidade in habilidades %}
+    <div class="card mb-4" style="width: 18rem;">
+        <img src="{{ habilidade.imagem.url }}" 
+             class="card-img-top" 
+             alt="{{ habilidade.nome }}">
+        <div class="card-body">
+            <h5 class="card-title">{{ habilidade.nome }}</h5>
+            <p class="card-text">{{ habilidade.descricao }}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">{{ habilidade.efeito }}</li>
+            <li class="list-group-item">Natureza: {{ habilidade.natureza }}</li>
+            <li class="list-group-item">Valor: {{ habilidade.valor }}</li>
+        </ul>
+        <div class="card-body">
+            <a href="#" class="card-link">Detalhes</a>
+            <a href="#" class="card-link">Projetos</a>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}
