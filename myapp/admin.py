@@ -1,6 +1,9 @@
 from django.contrib import admin
-from .models import (AtributoRPG, ClasseRPG, CharacterRPG, ValorAtributo, EfeitoRPG, 
-                     NaturezaRPG, Habilidade, Item, CharacterHabilidade, CharacterItem, RaceRPG, LevelRPG)
+from .models.character import CharacterRPG, ValorAtributo, CharacterHabilidade, CharacterItem
+from .models.types import AtributoRPG, ClasseRPG, RaceRPG
+from .models.values import EfeitoRPG, NaturezaRPG, LevelRPG
+from .models.habilidades import Habilidade
+from .models.itens import Item
 
 # Register your models here.
 class ValorAtributoInline(admin.TabularInline):

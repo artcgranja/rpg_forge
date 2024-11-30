@@ -76,6 +76,11 @@
                                     <li><strong>Natureza:</strong> {{ habilidade.natureza }}</li>
                                     <li><strong>Valor:</strong> {{ habilidade.valor }}</li>
                                     <li><strong>Efeito:</strong> {{ habilidade.efeito }}</li>
+                                    <li><strong>Gasto de Mana:</strong> {{ habilidade.mana_gasto }}</li>
+                                    <li><strong>Custo de ação:</strong> {% if habilidade.acao %}{{ habilidade.acao }}{% else %}Não possui custo{% endif %}</li>
+                                    {% if habilidade.acao_bonus > 0 %}
+                                    <li><strong>Custo Bonus:</strong> {{ habilidade.acao_bonus }}</li>
+                                    {% endif %}
                                 </ul>
                             </div>
                         </div>
@@ -90,17 +95,6 @@
 
 {% block extra_css %}
 <style>
-    .card-img-wrapper {
-        height: 200px;
-        overflow: hidden;
-    }
-
-    .card-img-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
     .hover-card {
         transition: all 0.3s ease;
     }
@@ -112,12 +106,6 @@
 
     .badge {
         font-size: 0.8rem;
-    }
-
-    .modal-body img {
-        max-height: 300px;
-        width: 100%;
-        object-fit: cover;
     }
 </style>
 {% endblock %}

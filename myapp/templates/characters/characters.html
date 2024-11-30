@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Personagens - D&D Simulator{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header com botão de criar -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h1 class="display-4">
+                <i class="bi bi-people-fill me-2"></i>Personagens
+            </h1>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="{% url 'myapp:create_character' %}" class="btn btn-primary">
+                <i class="bi bi-person-plus-fill me-2"></i>Criar Novo Personagem
+            </a>
+        </div>
+    </div>
+
+    {% if caracters %}
+    <!-- Cards em telas grandes -->
+    <div class="d-none d-md-block">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for caracter in caracters %}
+            <div class="col">
+                <div class="card h-100 shadow-sm hover-shadow">
+                    <div class="card-header" style="background-color: var(--primary-color); color: white;">
+                        <h5 class="card-title mb-0">{{ caracter.nome }}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-secondary">
+                                <i class="bi bi-shield-fill me-1"></i>{{ caracter.classe }}
+                            </span>
+                            <span class="badge bg-info">
+                                <i class="bi bi-star-fill me-1"></i>Nível {{ caracter.level }}
+                            </span>
+                        </div>
+                        <p class="card-text">
+                            <i class="bi bi-people me-2"></i>
+                            <small class="text-muted">Raça: {{ caracter.race }}</small>
+                        </p>
+                        <p class="card-text">
+                            <i class="bi bi-book me-2"></i>
+                            {{ caracter.descricao|truncatewords:30 }}
+                        </p>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-pencil-square me-1"></i>Editar
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash me-1"></i>Excluir
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Lista para telas pequenas -->
+    <div class="d-md-none">
+        <div class="list-group">
+            {% for caracter in caracters %}
+            <div class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <h5 class="mb-1">
+                        <i class="bi bi-person-fill me-2"></i>{{ caracter.nome }}
+                    </h5>
+                    <span class="badge bg-info">
+                        <i class="bi bi-star-fill me-1"></i>{{ caracter.level }}
+                    </span>
+                </div>
+                <p class="mb-1">
+                    <span class="badge bg-secondary me-2">
+                        <i class="bi bi-shield-fill me-1"></i>{{ caracter.classe }}
+                    </span>
+                    <small class="text-muted">
+                        <i class="bi bi-people me-1"></i>{{ caracter.race }}
+                    </small>
+                </p>
+                <small class="text-muted d-block mb-2">
+                    <i class="bi bi-book me-2"></i>{{ caracter.descricao|truncatewords:15 }}
+                </small>
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-primary">
+                        <i class="bi bi-pencil-square me-1"></i>Editar
+                    </button>
+                    <button class="btn btn-outline-danger">
+                        <i class="bi bi-trash me-1"></i>Excluir
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <!-- Mensagem quando não há personagens -->
+    <div class="text-center py-5">
+        <div class="card shadow-sm">
+            <div class="card-body py-5">
+                <i class="bi bi-person-plus-fill display-1 text-muted mb-3"></i>
+                <p class="lead mb-4">Você ainda não tem nenhum personagem cadastrado.</p>
+                <a href="{% url 'myapp:create_character' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle me-2"></i>Criar Novo Personagem
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Adicione este CSS ao final do bloco content -->
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        transition: transform 0.2s ease-in-out;
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+    
+    .card {
+        transition: all 0.2s ease-in-out;
+    }
+    
+    .list-group-item-action:hover {
+        transform: translateX(5px);
+        transition: transform 0.2s ease-in-out;
+    }
+</style>
+{% endblock %}
