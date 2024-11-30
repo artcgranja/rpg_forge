@@ -1,24 +1,123 @@
-{% extends 'base.html' %} {% block title %} Habilidades {% endblock %}
+{% extends 'base.html' %} 
+{% block title %}Habilidades{% endblock %}
 
 {% block content %}
-    {% for habilidade in habilidades %}
-    <div class="card mb-4" style="width: 18rem;">
-        <img src="{{ habilidade.imagem.url }}" 
-             class="card-img-top" 
-             alt="{{ habilidade.nome }}">
-        <div class="card-body">
-            <h5 class="card-title">{{ habilidade.nome }}</h5>
-            <p class="card-text">{{ habilidade.descricao }}</p>
-        </div>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">{{ habilidade.efeito }}</li>
-            <li class="list-group-item">Natureza: {{ habilidade.natureza }}</li>
-            <li class="list-group-item">Valor: {{ habilidade.valor }}</li>
-        </ul>
-        <div class="card-body">
-            <a href="#" class="card-link">Detalhes</a>
-            <a href="#" class="card-link">Projetos</a>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">Habilidades</h1>
+            <p class="lead text-muted">Explore as habilidades disponíveis</p>
         </div>
     </div>
-    {% endfor %}
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        {% for habilidade in habilidades %}
+        <div class="col">
+            <div class="card h-100 shadow-sm hover-card">
+                {% if habilidade.imagem %}
+                <div class="card-img-wrapper">
+                    <img src="{{ habilidade.imagem.url }}" 
+                         class="card-img-top" 
+                         alt="{{ habilidade.nome }}">
+                </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title mb-0">{{ habilidade.nome }}</h5>
+                        <span class="badge bg-primary">{{ habilidade.natureza }}</span>
+                    </div>
+                    <p class="card-text">{{ habilidade.descricao|truncatewords:20 }}</p>
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <i class="bi bi-stars text-warning me-2"></i>
+                        <strong>Efeito:</strong> {{ habilidade.efeito }}
+                    </li>
+                    <li class="list-group-item">
+                        <i class="bi bi-lightning-charge text-danger me-2"></i>
+                        <strong>Valor:</strong> {{ habilidade.valor }}
+                    </li>
+                </ul>
+
+                <div class="card-footer bg-transparent">
+                    <div class="d-grid gap-2">
+                        <button type="button" 
+                                class="btn btn-outline-primary" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#habilidadeModal{{ habilidade.id }}">
+                            <i class="bi bi-info-circle me-2"></i>Detalhes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal for each skill -->
+        <div class="modal fade" id="habilidadeModal{{ habilidade.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{ habilidade.nome }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% if habilidade.imagem %}
+                        <img src="{{ habilidade.imagem.url }}" 
+                             class="img-fluid rounded mb-3" 
+                             alt="{{ habilidade.nome }}">
+                        {% endif %}
+                        <p>{{ habilidade.descricao }}</p>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6>Detalhes da Habilidade</h6>
+                                <ul class="list-unstyled mb-0">
+                                    <li><strong>Natureza:</strong> {{ habilidade.natureza }}</li>
+                                    <li><strong>Valor:</strong> {{ habilidade.valor }}</li>
+                                    <li><strong>Efeito:</strong> {{ habilidade.efeito }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card-img-wrapper {
+        height: 200px;
+        overflow: hidden;
+    }
+
+    .card-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    }
+
+    .badge {
+        font-size: 0.8rem;
+    }
+
+    .modal-body img {
+        max-height: 300px;
+        width: 100%;
+        object-fit: cover;
+    }
+</style>
 {% endblock %}

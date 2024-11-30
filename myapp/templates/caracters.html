@@ -1,19 +1,48 @@
-{% extends 'base.html' %} {% block title %} Caracters {% endblock %}
+{% extends 'base.html' %} {% block title %}Personagens{% endblock %}
 
 {% block content %}
-    <h1>Caracters</h1>
-    <table>
-        <tr>
-            <th>Nome</th>
-            <th>Classe</th>
-            <th>Descrição</th>
-        </tr>
-        {% for caracter in caracters %}
-        <tr>
-            <td>{{ caracter.nome }}</td>
-            <td>{{ caracter.classe }}</td>
-            <td>{{ caracter.descricao }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-4">Personagens</h1>
+        </div>
+    </div>
+
+    <!-- Cards em telas grandes, lista em telas pequenas -->
+    <div class="d-none d-md-block">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for caracter in caracters %}
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">{{ caracter.nome }}</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="badge bg-secondary">{{ caracter.classe }}</span>
+                            <span class="badge bg-info">{{ caracter.level }}</span>
+                        </div>
+                        <p class="card-text"><small class="text-muted">Raça: {{ caracter.race }}</small></p>
+                        <p class="card-text">{{ caracter.descricao|truncatewords:30 }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Lista para telas pequenas -->
+    <div class="d-md-none">
+        <div class="list-group">
+            {% for caracter in caracters %}
+            <div class="list-group-item">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ caracter.nome }}</h5>
+                    <small>{{ caracter.level }}</small>
+                </div>
+                <p class="mb-1">{{ caracter.classe }} | {{ caracter.race }}</p>
+                <small class="text-muted">{{ caracter.descricao|truncatewords:15 }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

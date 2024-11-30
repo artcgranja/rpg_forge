@@ -17,15 +17,49 @@ class ClasseRPG(models.Model):
     def __str__(self):
         return self.nome
 
+class RaceRPG(models.Model):
+    nome = models.CharField(max_length=100, null=False, blank=False)
+    descricao = models.TextField(null=False, blank=False)
+    bonus_atributo = models.ForeignKey(AtributoRPG, on_delete=models.CASCADE, null=True, blank=True)
+    bonus_valor = models.IntegerField(default=0)
+    def __str__(self):
+        return self.nome
+
+class LevelRPG(models.Model):
+    level = models.IntegerField(default=1, validators=[MaxValueValidator(20)])
+    exp_needed = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"Level {self.level}"
+
+    def is_max_level(self):
+        return self.level >= 20
+
 class CharacterRPG(models.Model):
     nome = models.CharField(max_length=100)
+    race = models.ForeignKey(RaceRPG, on_delete=models.CASCADE, null=True, blank=True)
     classe = models.ForeignKey(ClasseRPG, on_delete=models.CASCADE)
-    level = models.IntegerField(default=1, validators=[MaxValueValidator(20)])
+    exp = models.IntegerField(default=0)
+    level = models.ForeignKey(LevelRPG, on_delete=models.CASCADE, default=1)
     vivo = models.BooleanField(default=True)
     vida = models.IntegerField()
     mana = models.IntegerField(null=True, blank=True)
     descricao = models.TextField()
     atributos = models.ManyToManyField(AtributoRPG, through='ValorAtributo')
+
+    def check_level_up(self):
+        if self.exp >= self.level.exp_needed and not self.level.is_max_level():
+            next_level = LevelRPG.objects.get(level=self.level.level + 1)
+            self.exp -= self.level.exp_needed
+            self.level = next_level
+            self.save()
+            return True
+        return False
+
+    def add_exp(self, amount):
+        self.exp += amount
+        self.save()
+        return self.check_level_up()
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None
@@ -38,6 +72,8 @@ class CharacterRPG(models.Model):
 
         if self.vivo == False and self.vida > 0:
             self.revive()
+
+        leveled_up = self.check_level_up() if not is_new else False
 
         super().save(*args, **kwargs)
 
