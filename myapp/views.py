@@ -24,27 +24,27 @@ def index(request):
                 request.session.set_expiry(0)
             return redirect('myapp:index')
     
-    return render(request, 'index.html')
+    return render(request, 'myapp/index.html')
 
 def classes(request):
     classes = ClasseRPG.objects.all()
-    return render(request, 'classes.html', {'classes': classes})
+    return render(request, 'myapp/classes.html', {'classes': classes})
 
 @login_required
 def characters(request):
     characters = CharacterRPG.objects.filter(user=request.user)
-    return render(request, 'characters/characters.html', {'caracters': characters})
+    return render(request, 'myapp/characters/characters.html', {'characters': characters})
 
 def habilidades(request):
     habilidades = Habilidade.objects.all()
-    return render(request, 'habilidades.html', {'habilidades': habilidades})
+    return render(request, 'myapp/habilidades.html', {'habilidades': habilidades})
 
 @login_required
 def profile(request):
-    return render(request, 'profile.html')
+    return render(request, 'myapp/profile.html')
 
 def register(request):
-    return render(request, 'register.html')
+    return render(request, 'myapp/register.html')
 
 @login_required
 def create_character(request):
@@ -99,13 +99,13 @@ def create_character(request):
 
         except (RaceRPG.DoesNotExist, ClasseRPG.DoesNotExist):
             messages.error(request, 'Raça ou Classe inválida.')
-            return render(request, 'characters/create_character.html', context)
+            return render(request, 'myapp/characters/create_character.html', context)
         
         except Exception as e:
             messages.error(request, f'Erro ao criar personagem: {str(e)}')
-            return render(request, 'characters/create_character.html', context)
+            return render(request, 'myapp/characters/create_character.html', context)
 
-    return render(request, 'characters/create_character.html', context)
+    return render(request, 'myapp/characters/create_character.html', context)
 
 def get_classe_info(request, classe_id):
     print("Classe ID:", classe_id)
