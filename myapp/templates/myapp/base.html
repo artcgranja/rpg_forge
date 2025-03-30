@@ -37,18 +37,23 @@
                             <i class="bi bi-shield me-1"></i>Classes
                         </a>
                     </li>
-                    {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'myapp:characters' %}">
-                            <i class="bi bi-person me-1"></i>Personagens
+                        <a class="nav-link" href="{% url 'myapp:races' %}">
+                            <i class="bi bi-person-standing me-1"></i>Raças
                         </a>
                     </li>
-                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'myapp:habilidades' %}">
                             <i class="bi bi-lightning me-1"></i>Habilidades
                         </a>
                     </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'myapp:characters' %}">
+                            <i class="bi bi-people me-1"></i>Personagens
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
                 
                 <!-- Adicionar esta parte para o login -->

@@ -9,6 +9,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 def index(request):
@@ -24,24 +25,28 @@ def index(request):
                 request.session.set_expiry(0)
             return redirect('myapp:index')
     
-    return render(request, 'myapp/index.html')
+    return render(request, 'myapp/index/index.html')
 
 def classes(request):
     classes = ClasseRPG.objects.all()
-    return render(request, 'myapp/classes.html', {'classes': classes})
+    return render(request, 'myapp/classes/classes.html', {'classes': classes})
+
+def habilidades(request):
+    habilidades = Habilidade.objects.all()
+    return render(request, 'myapp/abilities/abilities.html', {'habilidades': habilidades})
+
+def races(request):
+    races = RaceRPG.objects.all()
+    return render(request, 'myapp/races/races.html', {'races': races})
 
 @login_required
 def characters(request):
     characters = CharacterRPG.objects.filter(user=request.user)
     return render(request, 'myapp/characters/characters.html', {'characters': characters})
 
-def habilidades(request):
-    habilidades = Habilidade.objects.all()
-    return render(request, 'myapp/habilidades.html', {'habilidades': habilidades})
-
 @login_required
 def profile(request):
-    return render(request, 'myapp/profile.html')
+    return render(request, 'myapp/profile/profile.html')
 
 def register(request):
     return render(request, 'myapp/register.html')
@@ -79,7 +84,7 @@ def create_character(request):
                 'selected_classe': classe_id
             })
             messages.error(request, 'Por favor, corrija os erros no formulário.')
-            return render(request, 'characters/create_character.html', context)
+            return render(request, 'myapp/characters/create_character.html', context)
 
         try:
             race = RaceRPG.objects.get(id=race_id)
@@ -118,3 +123,18 @@ def get_classe_info(request, classe_id):
         return JsonResponse(data)
     except ClasseRPG.DoesNotExist:
         return JsonResponse({'error': 'Classe não encontrada'}, status=404)
+    
+@login_required
+def delete_character(request, character_id):
+    print("User:", request.user)
+    try:
+        character = CharacterRPG.objects.get(id=character_id, user=request.user)
+        print("Character encontrado:", character)
+        character.delete()
+        return JsonResponse({'status': 'success'})
+    except CharacterRPG.DoesNotExist:
+        print("Character não encontrado")
+        return JsonResponse({'status': 'error', 'message': 'Character não encontrado'}, status=404)
+    except Exception as e:
+        print("Erro:", str(e))
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)

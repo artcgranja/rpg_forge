@@ -47,9 +47,11 @@
                             <button class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-pencil-square me-1"></i>Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm">
+                            <button type="button" class="btn btn-outline-danger btn-sm delete-btn"
+                                    data-character-id="{{ character.id }}"
+                                    data-delete-url="{% url 'myapp:delete_character' character.id %}">
                                 <i class="bi bi-trash me-1"></i>Excluir
-                            </button>
+                            </button>                            
                         </div>
                     </div>
                 </div>
@@ -86,7 +88,9 @@
                     <button class="btn btn-outline-primary">
                         <i class="bi bi-pencil-square me-1"></i>Editar
                     </button>
-                    <button class="btn btn-outline-danger">
+                    <button type="button" class="btn btn-outline-danger btn-sm delete-btn"
+                            data-character-id="{{ character.id }}"
+                            data-delete-url="{% url 'myapp:delete_character' character.id %}">
                         <i class="bi bi-trash me-1"></i>Excluir
                     </button>
                 </div>
@@ -109,4 +113,87 @@
     </div>
     {% endif %}
 </div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteConfirmModalLabel">Confirmar Exclusão</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        Você tem certeza que deseja excluir esse personagem?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirmDelete">Excluir</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Função para pegar o valor do cookie CSRF
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        cookies.forEach(cookie => {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            }
+        });
+    }
+    return cookieValue;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
+    let deleteUrl = null;
+    const csrftoken = getCookie('csrftoken');
+
+    // Seleciona os botões de exclusão corretamente
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            // Se você usar o data-delete-url, já recebe a URL completa
+            deleteUrl = this.dataset.deleteUrl;
+            deleteModal.show();
+        });
+    });
+
+    document.getElementById('confirmDelete').addEventListener('click', function() {
+        if (deleteUrl) {
+            fetch(deleteUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Personagem deletado com sucesso!');
+                    location.reload(); // Recarrega a página para atualizar a lista
+                } else {
+                    console.error('Erro:', data.message);
+                    alert('Erro ao excluir personagem: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+                alert('Erro ao excluir personagem');
+            })
+            .finally(() => {
+                deleteModal.hide();
+            });
+        }
+    });
+});
+</script>
 {% endblock %}

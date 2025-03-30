@@ -1,4 +1,5 @@
 {% extends 'myapp/base.html' %}
+{% load static %}
 
 {% block title %}Criar Personagem - D&D Simulator{% endblock %}
 
@@ -150,5 +151,5 @@
     {% endfor %}
 </div>
 {% endif %}
-<script src="{% static 'myapp/js/myapp/script.js' %}"></script>
+<script src="{% static 'myapp/js/script.js' %}"></script>
 {% endblock %} 
